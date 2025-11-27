@@ -57,47 +57,35 @@ h1 {
 
 @keyframes fadeIn { to { opacity: 1; } }
 
-.hearts {
+/* --- CONFETTI --- */
+
+.confetti-container {
     position: absolute;
     width: 100%;
     height: 100%;
-    pointer-events: none;
     overflow: hidden;
+    pointer-events: none;
 }
 
-.heart {
+.confetti {
     position: absolute;
-    width: 5vw;
-    max-width: 30px;
-    height: 5vw;
-    max-height: 30px;
-    background: #ff4d6d;
-    transform: rotate(-45deg);
+    width: 8px;
+    height: 12px;
+    background: red;
+    opacity: 0.9;
     top: 100%;
-    animation: rise 5s linear infinite;
+    animation: confettiFall 4s linear infinite;
+    transform: rotate(20deg);
 }
 
-.heart::before, .heart::after {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: #ff4d6d;
-    border-radius: 50%;
-}
-
-.heart::before { top: -50%; left: 0; }
-.heart::after { top: 0; left: 50%; }
-
-@keyframes rise {
-    0% { top: 100%; opacity: 1; transform: translateX(0) rotate(0deg); }
-    100% { top: -10%; opacity: 0; transform: translateX(50px) rotate(360deg); }
+@keyframes confettiFall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
 }
 
 @media (max-width: 500px) {
     h1 { font-size: 8vw; }
     .slideshow { width: 95vw; }
-    .heart { width: 7vw; height: 7vw; }
 }
 </style>
 </head>
@@ -118,21 +106,39 @@ h1 {
     <source src="pavlo-zibrov-den-narodzhennya.mp3" type="audio/mpeg">
 </audio>
 
-<div class="hearts"></div>
+<div class="confetti-container"></div>
 
 <script>
-// Hearts animation
-const heartsContainer = document.querySelector('.hearts');
-function createHeart() {
-    const heart = document.createElement('div');
-    heart.classList.add('heart');
-    heart.style.left = Math.random() * 100 + '%';
-    heartsContainer.appendChild(heart);
-    setTimeout(() => heartsContainer.removeChild(heart), 5000);
-}
-setInterval(createHeart, 400);
+// CONFETTI GENERATOR
+const confettiContainer = document.querySelector('.confetti-container');
 
-// Music autoplay on click
+function createConfetti() {
+    const confetti = document.createElement('div');
+    confetti.classList.add('confetti');
+
+    // Random color
+    const colors = ["#ff4d6d", "#ffd700", "#7cfbff", "#8aff8a", "#ff9cf0"];
+    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+    // Random start position
+    confetti.style.left = Math.random() * 100 + "%";
+
+    // Random size
+    const size = Math.random() * 8 + 6;
+    confetti.style.width = size + "px";
+    confetti.style.height = size * 1.4 + "px";
+
+    // Random animation duration
+    confetti.style.animationDuration = (3 + Math.random() * 2) + "s";
+
+    confettiContainer.appendChild(confetti);
+
+    setTimeout(() => confetti.remove(), 5000);
+}
+
+setInterval(createConfetti, 150);
+
+// Music autoplay
 const music = document.getElementById('bgMusic');
 document.body.addEventListener('click', () => {
     music.play();
